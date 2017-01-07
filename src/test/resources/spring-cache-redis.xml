@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="   
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd   
+                http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.1.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 启用缓存注解功能，这个是必须的，否则注解不会生效，另外，该注解一定要声明在spring主配置文件中才会生效 -->
+	<cache:annotation-driven cache-manager="commonCacheManager" />
+
+	<!-- redis cache manager 
+		redisCache1101: 用于缓存验证码获取次数限制 ——1分钟
+		redisCache1102: 用于缓存登录注册验证码——30分钟
+		其他缓存实例的配置可根据需要自行添加
+	-->
+	<bean id="commonCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+		<constructor-arg name="template" ref="redisTemplate1100" />
+		<!-- 设置过期时间 30min -->
+		<property name="expires">
+			<map key-type="java.lang.String" value-type="java.lang.Long">
+				<entry key="redisCache1101" value="60" />
+				<entry key="redisCache1102" value="1800" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="userCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+		<constructor-arg name="template" ref="redisTemplate1200" />
+		<!-- 设置过期时间 -->
+		<property name="expires">
+			<map key-type="java.lang.String" value-type="java.lang.Long">
+				<entry key="redisCache1201" value="0" />
+			</map>
+		</property>
+	</bean>	
+	
+	<bean id="hxCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+		<constructor-arg name="template" ref="redisTemplate1300" />
+		<!-- 设置过期时间 -->
+		<property name="expires">
+			<map key-type="java.lang.String" value-type="java.lang.Long">
+				<entry key="redisCache1301" value="5184000" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="adminCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+		<constructor-arg name="template" ref="redisTemplate1400" />
+		<!-- 设置过期时间 -->
+		<property name="expires">
+			<map key-type="java.lang.String" value-type="java.lang.Long">
+				<entry key="redisCache1401" value="5184000" />
+			</map>
+		</property>
+	</bean>
+		
+	<!-- redis 相关配置 -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+
+	<!-- redis 模板工厂 -->
+	<bean id="redisConnectionFactory1000"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="${redis.host}" p:port="${redis.port}" p:pool-config-ref="poolConfig"
+		p:database="${redis.database}" />
+
+	<!-- key-value 的序列化 -->
+	<bean id="keySerializer"
+		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+
+	<!-- 处理common的序列化实例 -->
+	<bean id="commonValueSerializer"
+		class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
+		<constructor-arg name="type" value="java.lang.Object" />
+	</bean>
+	
+	<!-- 处理用户User的序列化实例 -->
+	<bean id="userValueSerializer"
+		class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
+		<constructor-arg name="type" value="com.thirtydays.campus.user.model.User" />
+	</bean>
+	
+	<!-- 处理Huanxin的序列化实例 -->
+	<bean id="hxValueSerializer"
+		class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
+		<constructor-arg name="type" value="com.thirtydays.campus.tpos.chat.model.ServerRegistration" />
+	</bean>	
+
+	<!-- 处理Huanxin的序列化实例 -->
+	<bean id="adminValueSerializer"
+		class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
+		<constructor-arg name="type" value="com.thirtydays.campus.user.model.Manager" />
+	</bean>
+
+	<!--common redis 模板 -->
+	<bean id="redisTemplate1100" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="redisConnectionFactory1000" />
+		<property name="keySerializer" ref="keySerializer" />
+		<property name="valueSerializer" ref="commonValueSerializer" />
+	</bean>
+	
+	<!-- 用户redis模板 -->
+	<bean id="redisTemplate1200" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="redisConnectionFactory1000" />
+		<property name="keySerializer" ref="keySerializer" />
+		<property name="valueSerializer" ref="userValueSerializer" />
+	</bean>
+	
+	<!--HX redis 模板 -->
+	<bean id="redisTemplate1300" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="redisConnectionFactory1000" />
+		<property name="keySerializer" ref="keySerializer" />
+		<property name="valueSerializer" ref="hxValueSerializer" />
+	</bean>
+	
+	<!-- 管理员admin 模板 -->
+	<bean id="redisTemplate1400" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="redisConnectionFactory1000" />
+		<property name="keySerializer" ref="keySerializer" />
+		<property name="valueSerializer" ref="adminValueSerializer" />
+	</bean>
+</beans>
