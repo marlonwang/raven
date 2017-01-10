@@ -21,7 +21,7 @@ public class PushRest {
 	{
 		GeneralResult result = new GeneralResult();
 		LOGGER.info("Begin to push single device.");
-		//
+		// do push
 		try{
 			
 		}catch(Exception e){
