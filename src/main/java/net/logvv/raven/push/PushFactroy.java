@@ -44,7 +44,7 @@ public final class PushFactroy
             case HUAWEI:
                 return SpringContextHolder.getBean(HWMessagePusher.class);
             default:
-                LOGGER.error("Failed to find pushchannel: {}", pushChannel.toString());
+                LOGGER.error("Failed to find push channel: {}", pushChannel.toString());
                 return null;
         }
     }

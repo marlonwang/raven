@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 public class PushMessageService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PushMessageService.class);
-	
+
+	@Deprecated
 	public boolean validateMessage(PushMessage pushMessage)
 	{
 		//校验必选参数
@@ -52,7 +53,7 @@ public class PushMessageService
 		MessagePusher pusher = PushFactroy.createPusher(pushMessage.getPushChannel());
 		if (null == pusher)
 		{
-			LOGGER.error("Can not find message pusher, pushChannel is {}", pushMessage.getPushChannel());
+			LOGGER.error("Can not find message pusher, push channel: {}", pushMessage.getPushChannel());
 			return;
 		}
 		

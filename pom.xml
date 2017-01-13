@@ -233,8 +233,6 @@
 		</dependency>
 		<!-- xmpush end -->
 
-		<!-- huawei push -->
-        <!-- http -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
@@ -245,7 +243,19 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-		<!-- push end -->
+
+        <!-- swagger2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.4.0</version>
+        </dependency>
 
 	</dependencies>
 
