@@ -9,47 +9,21 @@ import java.util.Set;
 import net.logvv.raven.push.model.jpush.Options;
 
 /**
- * (推送消息模型，支持安卓、苹果)<br>
- * 
- * @author fanyaowu
- * @data 2015年1月26日
- * @version 1.0.0
- *
+ * 推送消息模型 统一模型，包括 极光、环信、友盟、华为、小米
+ * 支持安卓、苹果<br>
  */
 public class PushMessage
 {
-    
-    public enum DisplayType
-    {
-        // 通知，在界面弹出显示给用户的
-        NOTIFICATION("notification"),
-        // 消息，仅在后台处理的
-        MESSAGE("message");
-        
-        private String value;
-        
-        private DisplayType(String value)
-        {
-            this.value = value;
-        }
-        
-        @Override
-        public String toString()
-        {
-            return this.value;
-        }
-    }
-    
     public enum PushChannel
     {
-        // 可以通过自己的消息服务器发送，也可以通过友盟发送，还可以继续集成其他第三方的
+        // 推送渠道 友盟。极光，信鸽，小米，华为
         UMENG, JPUSH, XG, MI, HUAWEI
     }
     
-    // 消息推送类型，有广播、单播、列播、别名推送
+    // 消息推送类型，有广播、单播、列播、别名推送、标签推(有待扩展)
     public enum PushType
     {
-        BROADCAST, UNICAST, LISTCAST, ALIASCAST
+        BROADCAST, UNICAST, LISTCAST, ALIASCAST,TAGCAST
     }
     
     // 极光对应的是platform
@@ -58,7 +32,7 @@ public class PushMessage
         ANDROID,IOS,ALL
     }
     
-    // APP 类型,该字段多app设定
+    // 应用类型,该字段针对多客户端应用,如：商家端和用户端而定,其他app可以删除该字段 & 推送方法中的判断
     public enum AppType
     {
     	COMMON
@@ -68,26 +42,30 @@ public class PushMessage
     public enum AliasType{
         CustomAliasTypeToken;
     }
-    
-    // 安卓打开页面类型 ,该字段针对自由城市 商家端和用户端而定,其他app可以删除该字段 
-    public enum OpenPage
+
+    public enum DisplayType
     {
-    	ORDER_NEW,
-        ORDER_PAIED,
-        ORDER_FEE_CHANGE,
-    	REFUND_APPLY,
-        REFUND_RESULT,
-    	TRADE_FINISH,
-    	PROFILE_CHANGE,
-    	STAFF_CHECK,
-    	OPEN_FORBIDDEN,
-    	CHECK_RESULT,
-    	ACTIVITY_ALERT,
-    	COMMENT_ALERT
+        // 通知，在界面弹出显示给用户的
+        NOTIFICATION("notification"),
+        // 消息，仅在后台处理的
+        MESSAGE("message");
+
+        private String value;
+
+        private DisplayType(String value)
+        {
+            this.value = value;
+        }
+
+        @Override
+        public String toString()
+        {
+            return this.value;
+        }
     }
-    
-    // APP 类型,该字段针对自由城市 商家端和用户端而定,其他app可以删除该字段 & 推送方法中的判断
-    private AppType appType;
+
+    // APP 类型,该字段针对多客户端应用 如：商家端和用户端而定,其他app可以删除该字段 & 推送方法中的判断
+    private AppType appType = AppType.COMMON;
     
     private PushType pushType;
     
@@ -154,11 +132,18 @@ public class PushMessage
     // 额外的配置信息
 	private Options options;
 
+    // 标签json 对象数组字符串,华为、友盟、小米用到
+    // {"tags":[{"location":["ShangHai","GuangZhou"]},{"age":["20","30"]}]}
+    private String tagsJson;
+    // {"exclude_tags":[{"music":["blue"]},{"fruit":["apple"]}]}
+    private String excludeTagsJson;
+
 	// 默认构造方法
     public PushMessage()
     {
-        
+
     }
+
     /**
      * (有参的构造方法，参数必填)<br>
      *
@@ -409,6 +394,22 @@ public class PushMessage
 
     public void setAliasType(AliasType aliasType) {
         this.aliasType = aliasType;
+    }
+
+    public String getTagsJson() {
+        return tagsJson;
+    }
+
+    public void setTagsJson(String tagsJson) {
+        this.tagsJson = tagsJson;
+    }
+
+    public String getExcludeTagsJson() {
+        return excludeTagsJson;
+    }
+
+    public void setExcludeTagsJson(String excludeTagsJson) {
+        this.excludeTagsJson = excludeTagsJson;
     }
 
     @Override
