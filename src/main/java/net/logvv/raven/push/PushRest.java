@@ -2,10 +2,13 @@ package net.logvv.raven.push;
 
 import net.logvv.raven.common.model.ErrorCode;
 import net.logvv.raven.push.model.PushMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import net.logvv.raven.common.model.GeneralResult;
 
@@ -64,6 +67,7 @@ public class PushRest {
             return result;
         }
 		return result;
+	
 	}
 
 }
