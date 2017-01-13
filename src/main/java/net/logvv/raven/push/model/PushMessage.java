@@ -9,7 +9,6 @@ import java.util.Set;
 import net.logvv.raven.push.model.jpush.Options;
 
 /**
- * 
  * (推送消息模型，支持安卓、苹果)<br>
  * 
  * @author fanyaowu
@@ -59,10 +58,10 @@ public class PushMessage
         ANDROID,IOS,ALL
     }
     
-    // APP 类型,该字段针对自由城市 商家端和用户端而定,其他app可以删除该字段
+    // APP 类型,该字段多app设定
     public enum AppType
     {
-    	MERCHANT,CUSTOMER,COMMON
+    	COMMON
     }
 
     // 别名类型 友盟设置别名推送时必填
@@ -161,7 +160,6 @@ public class PushMessage
         
     }
     /**
-     * 
      * (有参的构造方法，参数必填)<br>
      *
      * @param productCode
@@ -452,6 +450,7 @@ public class PushMessage
             .append("actionContent=")
             .append(this.actionContent)
             .append(",");
+
         pushMessage.append("audiences=(");
         if (null != this.audiences && !this.audiences.isEmpty())
         {

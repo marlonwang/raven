@@ -178,8 +178,15 @@
 			<type>jar</type>
 		</dependency>
 		<!-- log end -->
-		
-		<!-- push begin -->
+
+        <!-- java mail-->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
+        <!-- push begin -->
 		<dependency>
 			<groupId>com.github.fernandospr</groupId>
 			<artifactId>javapns-jdk16</artifactId>
@@ -277,15 +284,11 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>net.logvv.raven.Application</mainClass>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>net.logvv.raven.Application</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -332,6 +335,11 @@
 									</includes>
 								</resource>
 							</resources>
+							<!-- 过滤后缀为pem、pfx的证书文件 -->
+<!--							<nonFilteredFileExtensions>
+								<nonFilteredFileExtension>p12</nonFilteredFileExtension>
+								<nonFilteredFileExtension>jks</nonFilteredFileExtension>
+							</nonFilteredFileExtensions>-->
 						</configuration>
 					</execution>
 				</executions>

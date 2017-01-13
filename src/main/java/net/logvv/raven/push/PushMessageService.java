@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PushMessageService
 {
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(PushMessageService.class);
 	
 	public boolean validateMessage(PushMessage pushMessage)

@@ -18,25 +18,26 @@ public class PushMessageServiceTest extends AbstractTestBase {
 	private PushMessageService pushMessageService;
 	
 	@Test
-	public void testPushByPushId() {
-		// Android 18761886848 10
+	public void testPushViaXGToken() {
 		// 待获取安卓的 pushId (deviceToken)
+        String token = "fe4bfa5d29f2e4a94a46bb7930c502fe65965661";
 		PushMessage pushMsg = new PushMessage();
+        pushMsg.setPushChannel(PushChannel.XG);
+        pushMsg.setPushType(PushType.UNICAST);
+        pushMsg.setClientType(ClientType.ANDROID);
+        pushMsg.setAppType(AppType.COMMON);
+
 		pushMsg.setTitle("校园助手");
 		pushMsg.setText("信鸽测试-Android");
 		
-		pushMsg.setAudiences(Arrays.asList(new String[]{"fe4bfa5d29f2e4a94a46bb7930c502fe65965661"}));
-		pushMsg.setPushChannel(PushChannel.XG);
-		pushMsg.setPushType(PushType.UNICAST);
-		pushMsg.setClientType(ClientType.ANDROID);
-		pushMsg.setAppType(AppType.COMMON);
-		
+		pushMsg.setAudiences(Arrays.asList(new String[]{token}));
+
 		pushMessageService.push(pushMsg);
 	}
 
 
 	@Test
-	public void testPushAndroidViaUmeng() {
+	public void testPushViaUmengToken() {
 		// 待获取安卓的 pushId (deviceToken)
 		String pushId = "AsBEOJycd7maqKYCYh887k3rOhZYZWuw0oRw9bOzCoV8";
 
@@ -44,24 +45,6 @@ public class PushMessageServiceTest extends AbstractTestBase {
         pushMsg.setTicker("campus-ticker");   // 必须 通知栏位置(可以设置同text)
         pushMsg.setTitle("campus-title");    // 必须 标题位置
 		pushMsg.setText("umeng测试-Android"); // 必须  正文位置
-
-		pushMsg.setAudiences(Arrays.asList(new String[]{pushId}));
-		pushMsg.setPushChannel(PushChannel.UMENG);
-		pushMsg.setPushType(PushType.UNICAST);
-		pushMsg.setClientType(ClientType.ANDROID);
-		pushMsg.setAppType(AppType.COMMON);
-
-		pushMessageService.push(pushMsg);
-	}
-
-	@Test
-	public void testPushIOSViaUmeng() {
-		// 待获取IOS的 pushId (deviceToken)
-		String pushId = "AsBEOJycd7maqKYCYh887k3rOhZYZWuw0oRw9bOzCoV8";
-
-		PushMessage pushMsg = new PushMessage();
-		pushMsg.setTitle("campus-title");
-        pushMsg.setText("umeng测试-IOS"); // 必须 内容位置
 
 		pushMsg.setAudiences(Arrays.asList(new String[]{pushId}));
 		pushMsg.setPushChannel(PushChannel.UMENG);
@@ -93,4 +76,22 @@ public class PushMessageServiceTest extends AbstractTestBase {
 
         pushMessageService.push(pushMsg);
     }
+
+	@Test
+	public void testPushViaHuaweiToken() {
+        String token = "0866696026685576300000151700CN01";
+
+        PushMessage pushMsg = new PushMessage();
+        pushMsg.setPushChannel(PushChannel.HUAWEI);
+        pushMsg.setPushType(PushType.UNICAST);
+        pushMsg.setClientType(ClientType.ANDROID);
+        pushMsg.setAppType(AppType.COMMON);
+
+        pushMsg.setTitle("HUAWEI");
+        pushMsg.setText("来自华为的推送");
+
+        pushMsg.setAudiences(Arrays.asList(new String[]{token}));
+
+        pushMessageService.push(pushMsg);
+	}
 }

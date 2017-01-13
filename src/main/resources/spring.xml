@@ -18,6 +18,7 @@
 				<value>application.properties</value>
 				<value>config.properties</value>
 				<value>redis.properties</value>
+				<value>email.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -25,16 +26,6 @@
 	<!-- 导入redis配置文件 -->
 	<import resource="spring-cache-redis.xml"/>
 	
-	<!-- 文件上传配置 -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-	    <!-- one of the properties available; the maximum file size in bytes -->
-	    <!-- 最大上传大小:100M -->
-	    <property name="maxUploadSize" value="104857600"/>
-	    <property name="defaultEncoding" value="UTF-8"/>
-	    <!-- 启用推迟文件解析, 以便捕获上传文件过大抛出的异常 -->
-	    <property name="resolveLazily" value="true"/>  
-	</bean>
-		
 	<!-- 配置线程池 -->
 	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<!-- 线程池维护线程的最少数量 -->
@@ -46,6 +37,19 @@
 		<!-- 线程池所使用的缓冲队列 -->
 		<property name="queueCapacity" value="200" />
 	</bean>
-	
+
+    <!-- 邮件发送配置 -->
+    <!-- 如果要使用用户名和密码验证,这一步需要 -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.smtp.host}" />
+        <property name="port" value="${mail.smtp.port}" />
+        <property name="username" value="${mail.account.from}" />
+        <property name="password" value="${mail.account.password}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+            </props>
+        </property>
+    </bean>
 
 </beans>

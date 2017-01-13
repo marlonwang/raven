@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 	
 	<!-- 注解自动扫描 -->
-	<context:component-scan base-package="com.thirtydays.campus" />
+	<context:component-scan base-package="net.logvv.raven" />
 	
-	<bean id="springContextHolder" class="net.logvv.raven.common.spring.SpringContextHolder" lazy-init="false" />
-
+	<bean id="springContextHolder" class="net.logvv.raven.common.spring.SpringContextHolder" lazy-init="false"/>
+	
 	<!-- 将多个配置文件读取到容器中，交给Spring管理 -->
 	<bean id="propertyConfigurer" class="net.logvv.raven.common.spring.DecryptPropertyPlaceholderConfigurer">
 		<property name="locations">
@@ -22,6 +18,7 @@
 				<value>application.properties</value>
 				<value>config.properties</value>
 				<value>redis.properties</value>
+				<value>email.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -29,39 +26,6 @@
 	<!-- 导入redis配置文件 -->
 	<import resource="spring-cache-redis.xml"/>
 	
-	<!-- 文件上传配置 -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-	    <!-- one of the properties available; the maximum file size in bytes -->
-	    <!-- 最大上传大小:10M -->
-	    <property name="maxUploadSize" value="10485760"/>
-	    <property name="defaultEncoding" value="UTF-8"/>
-	    <!-- 启用推迟文件解析, 以便捕获上传文件过大抛出的异常 -->
-	    <property name="resolveLazily" value="true"/>  
-	</bean>
-
-	<bean
-		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-		<property name="messageConverters">
-			<util:list id="beanList">
-				<ref bean="stringHttpMessageConverter" />
-				<ref bean="mappingJackson2HttpMessageConverter" />
-			</util:list>
-		</property>
-	</bean>
-
-	<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
-		<property name="supportedMediaTypes">
-			<list>
-				<value>text/plain;charset=UTF-8</value>
-				<value>application/x-www-form-urlencoded;charset=UTF-8</value>
-			</list>
-		</property>
-	</bean>
-	<bean id="mappingJackson2HttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-		<property name="supportedMediaTypes" value="application/json;charset=UTF-8" />
-	</bean>
-					
 	<!-- 配置线程池 -->
 	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<!-- 线程池维护线程的最少数量 -->
@@ -72,6 +36,20 @@
 		<property name="maxPoolSize" value="50" />
 		<!-- 线程池所使用的缓冲队列 -->
 		<property name="queueCapacity" value="200" />
+	</bean>
+
+	<!-- 邮件发送配置 -->
+	<!-- 如果要使用用户名和密码验证,这一步需要 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.smtp.host}" />
+		<property name="port" value="${mail.smtp.port}" />
+		<property name="username" value="${mail.account.from}" />
+		<property name="password" value="${mail.account.password}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
 	</bean>
 
 </beans>

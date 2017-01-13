@@ -9,10 +9,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -171,11 +173,12 @@ public class HttpConnectionAdaptor {
 
 					createSocketFactory(sslContext);
 				}
-// TODO need or not
-//                this.socketFactoryRegistry = RegistryBuilder
-//                        .create()
-//                        .register("http", PlainConnectionSocketFactory.INSTANCE)
-//                        .register("https", this.sf).build();
+
+                this.socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+						.register("http", PlainConnectionSocketFactory.INSTANCE)
+						.register("https", this.sf)
+						.build();
+
 			}
 
 		} catch (Exception e) {

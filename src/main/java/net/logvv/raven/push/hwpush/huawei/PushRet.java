@@ -1,6 +1,7 @@
 package net.logvv.raven.push.hwpush.huawei;
 
 /**
+ * HMS返回结果
  * Author: wangwei
  * Created on 2016/12/8 10:58.
  */

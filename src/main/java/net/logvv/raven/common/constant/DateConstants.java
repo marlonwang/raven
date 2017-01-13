@@ -45,8 +45,5 @@ public interface DateConstants {
 	int THURSDAY = 4;
 	int FRIDAY = 5;
 	int ALLWEEK = 0;
-	
-	// 公司名称
-	static final String COMPANY_NAME = "30days-tech";
-	
+
 }

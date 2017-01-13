@@ -36,7 +36,7 @@ public abstract class AbsNSPClient {
     protected static String hostAuth = "login.vmall.com";
     protected static final String CONNECT_TIMEOUT = "connectTimeout";
     protected static final String READ_TIMEOUT = "readTimeout";
-    private static ThreadLocal<Map<String, Integer>> times = new ThreadLocal();
+    private static final ThreadLocal<Map<String, Integer>> times = new ThreadLocal();
     protected String apiUrl;
     protected String tokenUrl;
     protected HttpConnectionAdaptor connectionAdaptor;
@@ -89,8 +89,7 @@ public abstract class AbsNSPClient {
         Map timesMap = getTimeout();
 
         if (null != timesMap) {
-            connectTimeout = ((Integer) timesMap.get("connectTimeout"))
-                    .intValue();
+            connectTimeout = ((Integer) timesMap.get("connectTimeout")).intValue();
             readTimeout = ((Integer) timesMap.get("readTimeout")).intValue();
         }
 
@@ -98,9 +97,9 @@ public abstract class AbsNSPClient {
                 readTimeout);
     }
 
-    private NSPResponse request(String httpurl, String data,
-                                Map<String, String> headers, String host, int connectTimeout,
-                                int readTimeout) throws NSPException {
+    private NSPResponse request(String httpurl, String data,Map<String, String> headers,
+                                String host, int connectTimeout,int readTimeout) throws NSPException
+    {
         CloseableHttpClient httpClient = null;
 
         if ((null != httpurl) && (httpurl.toLowerCase().startsWith("https"))
@@ -205,8 +204,8 @@ public abstract class AbsNSPClient {
         return response;
     }
 
-    public <T> T call(String service, Map<String, Object> params,
-                      Type returnType) throws NSPException {
+    public <T> T call(String service, Map<String, Object> params,Type returnType) throws NSPException
+    {
         NSPResponse response = callService(service, params, null);
         T result = null;
         if (null == response.getContent()) {
@@ -221,9 +220,9 @@ public abstract class AbsNSPClient {
         return result;
     }
 
-    public <T> T call(String service, Map<String, Object> params,
-                      Type returnType, Map<String, Object> attributes)
-            throws NSPException {
+    public <T> T call(String service, Map<String, Object> params,Type returnType, Map<String, Object> attributes)
+            throws NSPException
+    {
         NSPResponse response = callService(service, params, attributes);
         T result = null;
         if (null == response.getContent()) {
@@ -274,17 +273,23 @@ public abstract class AbsNSPClient {
         hostAuth = Utils.getHost(tokenUrl);
     }
 
-    public void setTimeout(int connectTimeout, int readTimeout) {
+    public void setTimeout(final int connectTimeout, final int readTimeout) {
         Object obj = times.get();
         if (null == obj) {
-            times.set(new HashMap(connectTimeout, readTimeout) {
+            times.set(new HashMap<String, Integer>() {
+                {
+                    put("connectTimeout", connectTimeout);
+                    put("readTimeout", readTimeout);
+                }
             });
             return;
         }
 
         Map timesMap = (Map) obj;
-        timesMap.put("connectTimeout", Integer.valueOf(connectTimeout));
-        timesMap.put("readTimeout", Integer.valueOf(readTimeout));
+        timesMap.put("connectTimeout", connectTimeout);
+        timesMap.put("readTimeout", readTimeout);
+
+        times.set(timesMap);
     }
 
     public Map<String, Integer> getTimeout() {

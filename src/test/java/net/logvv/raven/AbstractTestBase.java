@@ -8,12 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring.xml")
-@Transactional
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public abstract class AbstractTestBase
 {
-
-    
     /**
      *  使用说明：
      *  1、其他测试类需继承该类

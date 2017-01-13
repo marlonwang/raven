@@ -1,12 +1,19 @@
 package net.logvv.raven;
 
 import net.logvv.raven.common.constant.RegexConstant;
-import net.logvv.raven.utils.RegexUtils;
 import net.logvv.raven.utils.DateUtils;
+import net.logvv.raven.utils.JsonUtils;
+import net.logvv.raven.utils.RegexUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.scheduling.annotation.Async;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Test {
+
+    private static final ThreadLocal<Map<String, Integer>> times = new ThreadLocal();
+
 	public static void main(String[] args) {
 		String str = "";
 		for(int i = 0; i < 5; i++)
@@ -30,7 +37,46 @@ public class Test {
 		System.out.println(dtStr);
 
 		regexPhoneTest("17700001111");
-	}
+
+        setTimeout(1000,2000);
+        System.out.println(JsonUtils.obj2json(getTimeout()));
+    }
+
+    public static void setTimeout(int connectTimeout, int readTimeout) {
+        Object obj = times.get();
+        Map<String, Object> map = new HashMap<String, Object>() {
+            {
+                put("name", "June");
+                put("age", 12);
+            }
+        };
+
+        if (null == obj) {
+            Map timesMap = new HashMap();
+            timesMap.put("connectTimeout", connectTimeout);
+            timesMap.put("readTimeout", readTimeout);
+            times.set(timesMap);
+
+//            times.set(new HashMap(connectTimeout, readTimeout) {
+//            });
+            return;
+        }
+
+        Map timesMap = (Map) obj;
+        timesMap.put("connectTimeout", connectTimeout);
+        timesMap.put("readTimeout", readTimeout);
+
+        times.set(timesMap);
+    }
+
+    public static Map<String, Integer> getTimeout() {
+        Object obj = times.get();
+        if (null != obj) {
+            return ((Map) obj);
+        }
+
+        return null;
+    }
 	
 	@Async
 	private static void method1()

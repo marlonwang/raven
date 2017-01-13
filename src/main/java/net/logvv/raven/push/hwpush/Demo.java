@@ -3,11 +3,14 @@ package net.logvv.raven.push.hwpush;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
+import net.logvv.raven.push.hwpush.huawei.HMSService;
 import net.logvv.raven.push.hwpush.huawei.PushRet;
 import net.logvv.raven.push.hwpush.huawei.nsp.NSPClient;
 import net.logvv.raven.push.hwpush.huawei.nsp.OAuth2Client;
 import net.logvv.raven.push.hwpush.huawei.common.AccessToken;
 import net.logvv.raven.push.hwpush.huawei.common.NSPException;
+import net.logvv.raven.utils.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Author: wangwei
@@ -29,12 +32,13 @@ public class Demo {
             String appId = "10755467";
             String appKey = "a7602da8608cea548b54989936f00290";
 
-            AccessToken access_token = oauth2Client.getAccessToken("client_credentials", appId, appKey);
+            //AccessToken access_token = oauth2Client.getAccessToken("client_credentials", appId, appKey);
+            String access_token = "CFiArwPIwu8Ced+7TTUwUhj416dqmCBlakRbXWlORto/5nMHHwmYrDah9VCDGXyKxMRXTLJHnrWz4ZHsxnD4eg==";
+            // access token :CFiArwPIwu8Ced+7TTUwUhj416dqmCBlakRbXWlORto/5nMHHwmYrDah9VCDGXyKxMRXTLJHnrWz4ZHsxnD4eg==,expires time :604800
+            System.out.println(JsonUtils.obj2json(access_token));
 
-            System.err.println("access token :" + access_token.getAccess_token()
-                    + ",expires time :" + access_token.getExpires_in());
-
-            NSPClient client = new NSPClient(access_token.getAccess_token());
+            //NSPClient client = new NSPClient(access_token.getAccess_token());
+            NSPClient client = new NSPClient("CFiArwPIwu8Ced+7TTUwUhj416dqmCBlakRbXWlORto/5nMHHwmYrDah9VCDGXyKxMRXTLJHnrWz4ZHsxnD4eg==");
             client.initHttpConnections(30, 50);//设置每个路由的连接数和最大连接数
             client.initKeyStoreStream(Demo.class.getResource("/httpskeys/mykeystorebj.jks").openStream(), "123456");//如果访问https必须导入证书流和密码
 
@@ -76,11 +80,11 @@ public class Demo {
 
         //目标用户，必选。
         //由客户端获取， 32 字节长度。手机上安装了push应用后，会到push服务器申请token，申请到的token会上报给应用服务器
-        String token = "00000000000000000000000000000000";
+        String token = "0866696026685576300000151700CN01";
 
         //发送到设备上的消息，必选
         //最长为4096 字节（开发者自定义，自解析）
-        String message = "hello~ from remote planet.";
+        String message = "hello baby.";
 
         //必选
         //0：高优先级
@@ -115,7 +119,7 @@ public class Demo {
         hashMap.put("priority", priority);
         hashMap.put("cacheMode", cacheMode);
         hashMap.put("msgType", msgType);
-        hashMap.put("requestID", requestID);
+        //hashMap.put("requestID", requestID);
         hashMap.put("expire_time", expire_time);
 
         //设置http超时时间
@@ -124,6 +128,7 @@ public class Demo {
         PushRet resp = client.call("openpush.message.single_send", hashMap, PushRet.class);
 
         //打印响应
+        // {"message":"success","resultcode":0,"requestID":"1484286097787175154"}
         System.err.println("单发接口消息响应:" + resp.getResultcode() + ",message:" + resp.getMessage());
     }
 

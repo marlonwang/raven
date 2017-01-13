@@ -156,15 +156,13 @@ public class TypeUtils {
 		if (type instanceof Class) {
 			Class clazz = (Class) type;
 			if (clazz.isInterface()) {
-				throw new UnsupportedOperationException("unsupport type "
-						+ type);
+				throw new UnsupportedOperationException("unsupport type "+ type);
 			}
 
 			try {
 				return ((Map) clazz.newInstance());
 			} catch (Exception e) {
-				throw new UnsupportedOperationException("unsupport type "
-						+ type, e);
+				throw new UnsupportedOperationException("unsupport type "+ type, e);
 			}
 		}
 

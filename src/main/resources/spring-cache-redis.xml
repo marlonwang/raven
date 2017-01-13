@@ -15,11 +15,10 @@
 	-->
 	<bean id="commonCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
 		<constructor-arg name="template" ref="redisTemplate1100" />
-		<!-- 设置过期时间 30min -->
+		<!-- 设置过期时间 24h -->
 		<property name="expires">
 			<map key-type="java.lang.String" value-type="java.lang.Long">
-				<entry key="redisCache1101" value="60" />
-				<entry key="redisCache1102" value="1800" />
+				<entry key="redisCache1101" value="86400" />
 			</map>
 		</property>
 	</bean>
@@ -33,11 +32,6 @@
 	</bean>
 
 	<!-- redis 模板工厂 -->
-<!--    <bean id="redisConnectionFactory1000"
-          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}" p:pool-config-ref="poolConfig"
-          p:database="${redis.database}" />-->
-
 	<bean id="redisConnectionFactory1000" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
         <property name="usePool" value="true"/>
         <property name="hostName" value="${redis.host}"/>
@@ -50,17 +44,17 @@
 	<!-- key-value 的序列化 -->
 	<bean id="keySerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
 
-	<!-- 处理common的序列化实例 -->
-	<bean id="commonValueSerializer"
+	<!-- token -->
+	<bean id="tokenValueSerializer"
 		class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
-		<constructor-arg name="type" value="java.lang.Object" />
+		<constructor-arg name="type" value="net.logvv.raven.push.hwpush.huawei.common.AccessToken" />
 	</bean>
 	
 	<!--common redis 模板 -->
 	<bean id="redisTemplate1100" class="org.springframework.data.redis.core.RedisTemplate">
 		<property name="connectionFactory" ref="redisConnectionFactory1000" />
 		<property name="keySerializer" ref="keySerializer" />
-		<property name="valueSerializer" ref="commonValueSerializer" />
+		<property name="valueSerializer" ref="tokenValueSerializer" />
 	</bean>
 
 </beans>
