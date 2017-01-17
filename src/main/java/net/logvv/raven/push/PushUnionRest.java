@@ -3,6 +3,7 @@ package net.logvv.raven.push;
 import io.swagger.annotations.ApiOperation;
 import net.logvv.raven.common.model.ErrorCode;
 import net.logvv.raven.push.model.PushMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jni.Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,12 @@ public class PushUnionRest {
 	public GeneralResult notification(@RequestBody PushMessage notification)
 	{
 		GeneralResult result = new GeneralResult();
-        if(null == notification)
+        if(null == notification){
+            result.setErr(ErrorCode.INVALID_REQ_PARAMS);
+            return result;
+        }
+        if(PushMessage.PushChannel.HUAWEI == notification.getPushChannel()
+                && StringUtils.isBlank(notification.getIntent()))
         {
             result.setErr(ErrorCode.INVALID_REQ_PARAMS);
             return result;
@@ -48,6 +54,9 @@ public class PushUnionRest {
 		try
         {
             notification.setDisplayType(PushMessage.DisplayType.NOTIFICATION);
+            if(null == notification.getPushType()){
+                notification.setPushType(PushMessage.PushType.LISTCAST);
+            }
 
             pushService.push(notification);
             result.setResultStatus(true);
@@ -86,6 +95,9 @@ public class PushUnionRest {
         try
         {
             message.setDisplayType(PushMessage.DisplayType.MESSAGE);
+            if(null == message.getPushType()){
+                message.setPushType(PushMessage.PushType.LISTCAST);
+            }
 
             pushService.push(message);
             result.setResultStatus(true);

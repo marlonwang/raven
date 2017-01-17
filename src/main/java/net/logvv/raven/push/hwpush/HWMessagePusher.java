@@ -4,15 +4,16 @@ import net.logvv.raven.common.constant.DateConstants;
 import net.logvv.raven.push.MessagePusher;
 import net.logvv.raven.push.hwpush.huawei.HMSService;
 import net.logvv.raven.push.hwpush.huawei.PushRet;
-import net.logvv.raven.push.hwpush.huawei.common.AccessToken;
 import net.logvv.raven.push.hwpush.huawei.nsp.NSPClient;
 import net.logvv.raven.push.model.PushMessage;
 import net.logvv.raven.utils.JsonUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.List;
  * Author: wangwei
  * Created on 2016/12/3 16:44.
  */
+@Component("hWMessagePusher")
 public class HWMessagePusher implements MessagePusher
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(HWMessagePusher.class);
@@ -128,11 +130,16 @@ public class HWMessagePusher implements MessagePusher
 
         SimpleDateFormat dataFormat = new SimpleDateFormat(DateConstants.DEFAULT_DATE_FORMAT);
         String expire_time = dataFormat.format(currentTime + 24 * 60 * 60 * 1000);
-
+        if(StringUtils.isNotBlank(pushMessage.getIntent())){
+            pushMessage.setDoings(2);
+        }
         // 发送到设备上的消息，必选
         // 最长为4096 字节（开发者自定义，自解析）
         String android = "{\"notification_title\":\""+ pushMessage.getTitle() +"\"," +
-                "\"notification_content\":\""+ pushMessage.getText() +"\"}";
+                "\"notification_content\":\""+ pushMessage.getText() +"\"," +
+                "\"doings\":"+ pushMessage.getDoings() +","+
+                "\"intent\":\"" + pushMessage.getIntent()+"\""+
+                "}";
 
         // 构造请求
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -212,11 +219,16 @@ public class HWMessagePusher implements MessagePusher
 
         SimpleDateFormat dataFormat = new SimpleDateFormat(DateConstants.DEFAULT_DATE_FORMAT);
         String expire_time = dataFormat.format(currentTime + 24 * 60 * 60 * 1000);
-
+        if(StringUtils.isNotBlank(pushMessage.getIntent())){
+            pushMessage.setDoings(2);
+        }
         // 发送到设备上的消息，必选
         // 最长为4096 字节（开发者自定义，自解析）
         String android = "{\"notification_title\":\""+ pushMessage.getTitle() +"\"," +
-                "\"notification_content\":\""+ pushMessage.getText() +"\"}";
+                "\"notification_content\":\""+ pushMessage.getText() +"\"," +
+                "\"doings\":"+ pushMessage.getDoings() +","+
+                "\"intent\":\"" + pushMessage.getIntent()+"\""+
+                "}";
 
         // 构造请求
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -292,11 +304,17 @@ public class HWMessagePusher implements MessagePusher
 
         SimpleDateFormat dataFormat = new SimpleDateFormat(DateConstants.DEFAULT_DATE_FORMAT);
         String expire_time = dataFormat.format(currentTime + 24 * 60 * 60 * 1000);
-
+        if(pushMessage.getDoings() == 0){
+            //1：直接打开应用 2：通过自定义动作打开应用  3：打开URL  4：富媒体消息  5：短信收件箱广告  6：彩信收件箱广告
+            pushMessage.setDoings(2);
+        }
         // 发送到设备上的消息，必选
         // 最长为4096 字节（开发者自定义，自解析）
         String android = "{\"notification_title\":\""+ pushMessage.getTitle() +"\"," +
-                "\"notification_content\":\""+ pushMessage.getText() +"\"}";
+                "\"notification_content\":\""+ pushMessage.getText() +"\"," +
+                "\"doings\":"+ pushMessage.getDoings() +","+
+                "\"intent\":\"" + pushMessage.getIntent()+"\""+
+                "}";
 
         //推送范围，必选
         //1：指定用户，必须指定tokens字段
@@ -359,11 +377,17 @@ public class HWMessagePusher implements MessagePusher
 
         SimpleDateFormat dataFormat = new SimpleDateFormat(DateConstants.DEFAULT_DATE_FORMAT);
         String expire_time = dataFormat.format(currentTime + 24 * 60 * 60 * 1000);
-
+        if(pushMessage.getDoings() == 0){
+            //1：直接打开应用 2：通过自定义动作打开应用  3：打开URL  4：富媒体消息  5：短信收件箱广告  6：彩信收件箱广告
+            pushMessage.setDoings(2);
+        }
         // 发送到设备上的消息，必选
         // 最长为4096 字节（开发者自定义，自解析）
         String android = "{\"notification_title\":\""+ pushMessage.getTitle() +"\"," +
-                "\"notification_content\":\""+ pushMessage.getText() +"\"}";
+                "\"notification_content\":\""+ pushMessage.getText() +"\"," +
+                "\"doings\":"+ pushMessage.getDoings() +","+
+                "\"intent\":\"" + pushMessage.getIntent()+"\""+
+                "}";
 
         // 构造请求
         HashMap<String, Object> hashMap = new HashMap<String, Object>();

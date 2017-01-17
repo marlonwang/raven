@@ -6,12 +6,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.logvv.raven.push.model.jpush.Options;
 
 /**
  * 推送消息模型 统一模型，包括 极光、环信、友盟、华为、小米
  * 支持安卓、苹果<br>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PushMessage
 {
     public enum PushChannel
@@ -67,7 +70,7 @@ public class PushMessage
     // APP 类型,该字段针对多客户端应用 如：商家端和用户端而定,其他app可以删除该字段 & 推送方法中的判断
     private AppType appType = AppType.COMMON;
     
-    private PushType pushType;
+    private PushType pushType = PushType.LISTCAST;
     
     // 产品编码
     private String productCode;
@@ -127,16 +130,21 @@ public class PushMessage
     private String actionContent;
     
     // 扩展字段参数, key和value都是String类型, 扩展参数在Android仅对display_type为notification类型有效
-    private Map<String, String> extraParams = new HashMap<String, String>();
+    @JsonIgnore
+    private Map<String, String> extraParams = new HashMap<>();
     
     // 额外的配置信息
 	private Options options;
 
+    // 针对华为的配置
     // 标签json 对象数组字符串,华为、友盟、小米用到
     // {"tags":[{"location":["ShangHai","GuangZhou"]},{"age":["20","30"]}]}
     private String tagsJson;
     // {"exclude_tags":[{"music":["blue"]},{"fruit":["apple"]}]}
     private String excludeTagsJson;
+    private int doings = 1;
+    private String intent;
+
 
 	// 默认构造方法
     public PushMessage()
@@ -410,6 +418,22 @@ public class PushMessage
 
     public void setExcludeTagsJson(String excludeTagsJson) {
         this.excludeTagsJson = excludeTagsJson;
+    }
+
+    public int getDoings() {
+        return doings;
+    }
+
+    public void setDoings(int doings) {
+        this.doings = doings;
+    }
+
+    public String getIntent() {
+        return intent;
+    }
+
+    public void setIntent(String intent) {
+        this.intent = intent;
     }
 
     @Override
