@@ -304,7 +304,7 @@ public class HWMessagePusher implements MessagePusher
 
         SimpleDateFormat dataFormat = new SimpleDateFormat(DateConstants.DEFAULT_DATE_FORMAT);
         String expire_time = dataFormat.format(currentTime + 24 * 60 * 60 * 1000);
-        if(pushMessage.getDoings() == 0){
+        if(StringUtils.isNotBlank(pushMessage.getIntent())){
             //1：直接打开应用 2：通过自定义动作打开应用  3：打开URL  4：富媒体消息  5：短信收件箱广告  6：彩信收件箱广告
             pushMessage.setDoings(2);
         }
